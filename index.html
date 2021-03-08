@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.18/esri/css/main.css"
+    />
+    <style>
+      html,
+      body,
+      #view {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      .cpopup-content {
+        background-color: transparent;
+        border: 1px solid #0081ed;
+        border-image-source: url("./agsextend/bg1.png");
+        border-image-slice: 34 34 fill;
+        border-image-width: 34px;
+        border-image-repeat: stretch;
+        padding: 8px 12px;;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="view"></div>
+    <script>
+      var dojoConfig = {
+        packages: [
+          {
+            name: "agsextend",
+            location:
+              window.location.origin +
+              window.location.pathname.replace(/\/[^/]+$/, "") +
+              "/agsextend",
+          },
+        ],
+      };
+    </script>
+    <script src="https://js.arcgis.com/4.18/init.js"></script>
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/FeatureLayer",
+        "esri/geometry/Point",
+        "agsextend/Cpopup.js",
+        "agsextend/GraphicCalloutStrategy.js",
+      ], function (
+        Map,
+        SceneView,
+        FeatureLayer,
+        Point,
+        Cpopup,
+        GraphicCalloutStrategy
+      ) {
+        var map = new Map({
+          basemap: "osm",
+        });
+
+        var view = new SceneView({
+          map: map,
+          container: document.getElementById("view"),
+          extent: {
+            // autocasts as new Extent()
+            xmin: -9177811,
+            ymin: 4247000,
+            xmax: -9176791,
+            ymax: 4247784,
+            spatialReference: 102100,
+          },
+        });
+
+        var fl = new FeatureLayer({
+          url:
+            "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0",
+          popupEnabled: true,
+          popupTemplate: {
+            title: "123",
+            content: "123",
+          },
+        });
+        map.add(fl);
+
+        window.view = view;
+        view.when(() => {
+          var p1 = new Cpopup({
+            view: view,
+            location: new Point({
+              x: -9177419.382310335,
+              y: 4247278.158996038,
+              z: 7.520254594273865,
+              spatialReference: { wkid: 102100, latestWkid: 3857 },
+            }),
+          });
+
+          p1.show();
+
+          var p2 = new Cpopup({
+            view: view,
+            location: new Point({
+              x: -9177142.92402268,
+              y: 4247247.582757291,
+              z: 0.127861388027668,
+              spatialReference: { wkid: 102100, latestWkid: 3857 },
+            }),
+            currentAlignment: "bottom-right",
+          });
+
+          p2.show();
+        });
+      });
+    </script>
+  </body>
+</html>
